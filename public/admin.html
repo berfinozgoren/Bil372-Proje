@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yönetici Arayüzü</title>
+    <style>
+        body {
+            background-image: url('background.jpg'); /* Arka plan resmi dosya adı */
+            background-size: cover; /* Resmi ekran boyutuna göre ölçeklendir */
+            background-position: center; /* Resmi ortala */
+            height: 100vh; /* Sayfa yüksekliğini ekran yüksekliğine eşitle */
+            margin: 0; /* Kenar boşluklarını kaldır */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white; /* Metin rengi */
+            text-align: center;
+        }
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Otel Arayüzü</h1>
+    <div style="display: flex; gap: 20px;">
+        <div class="container">
+            <h2>Müşteri Ekle</h2>
+            <form id="musteriForm">
+                <input type="text" id="ad" placeholder="Ad" required><br>
+                <input type="text" id="soyad" placeholder="Soyad" required><br>
+                <input type="email" id="eposta" placeholder="Eposta" required><br>
+                <input type="text" id="telefon" placeholder="Telefon" required><br>
+                <input type="text" id="adres" placeholder="Adres" required><br>
+                <input type="text" id="sehir" placeholder="Şehir" required><br>
+                <input type="text" id="ulke" placeholder="Ülke" required><br>
+                <button type="submit">Ekle</button>
+            </form>
+
+            <h2>Müşteriler</h2>
+            <ul id="musteriListesi"></ul>
+        </div>
+
+        <div class="container">
+            <h2>Oda Doluluk Sorgulama</h2>
+            <form id="odaForm">
+                <input type="text" id="odaNumarasi" placeholder="Oda Numarası" required><br>
+                <button type="submit">Sorgula</button>
+            </form>
+            <div id="odaDurumu"></div>
+
+            <h2>Rezervasyon Listesi</h2>
+            <ul id="rezervasyonListesi"></ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Hizmetler</h2>
+        <ul id="hizmetListesi"></ul>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

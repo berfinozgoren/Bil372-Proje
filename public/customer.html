@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oda Doluluk Sorgulama</title>
+    <style>
+        body {
+            background-image: url('background.jpg'); /* Arka plan resmi dosya adı */
+            background-size: cover; /* Resmi ekran boyutuna göre ölçeklendir */
+            background-position: center; /* Resmi ortala */
+            height: 100vh; /* Sayfa yüksekliğini ekran yüksekliğine eşitle */
+            margin: 0; /* Kenar boşluklarını kaldır */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white; /* Metin rengi */
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        label, input, button {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .services {
+            margin-top: 20px;
+            width: 300px;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .services h2 {
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+        .services ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .services li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<h1>Oda Doluluk Sorgulama</h1>
+<form id="odaForm">
+    <label for="odaNo">Oda Numarası:</label>
+    <input type="text" id="odaNo" placeholder="Oda Numarası" required><br>
+    <button type="submit">Sorgula</button>
+</form>
+<p id="result"></p>
+
+<div class="services" id="hizmetListesiContainer">
+    <h2>Hizmetler</h2>
+    <ul id="hizmetListesi"></ul>
+</div>
+
+<script>
+    document.getElementById('odaForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const odaNo = document.getElementById('odaNo').value;
+        fetch(`/api/oda-sorgula?odaNo=${odaNo}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = data.message;
+            })
+            .catch(error => {
+                console.error('Oda sorgulama hatası:', error);
+                document.getElementById('result').innerText = 'Oda sorgulanırken bir hata oluştu. Lütfen tekrar deneyin.';
+            });
+    });
+
+    // Hizmetleri getir ve listele
+    fetch('/api/hizmetler')
+        .then(response => response.json())
+        .then(hizmetler => {
+            const hizmetListesi = document.getElementById('hizmetListesi');
+            hizmetListesi.innerHTML = ''; // Önce içeriği temizle
+            hizmetler.forEach(hizmet => {
+                const li = document.createElement('li');
+                li.textContent = `${hizmet.hizmet_adi} - ${hizmet.aciklama} - ${hizmet.fiyat}`;
+                hizmetListesi.appendChild(li);
+            });
+        })
+        .catch(error => console.error('Hizmet listesi getirme hatası:', error));
+</script>
+
+</body>
+</html>
