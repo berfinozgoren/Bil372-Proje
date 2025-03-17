@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Müşteri Arayüzü</title>
+    <style>
+        /* Mevcut stil kodlarınız burada */
+        body {
+            background-image: url('background.jpg'); /* Arka plan resmi dosya adı */
+            background-size: cover; /* Resmi ekran boyutuna göre ölçeklendir */
+            background-position: center; /* Resmi ortala */
+            height: 100vh; /* Sayfa yüksekliğini ekran yüksekliğine eşitle */
+            margin: 0; /* Kenar boşluklarını kaldır */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: black; /* Metin rengi */
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .box {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            position: relative;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<h1>Hoş Geldiniz!</h1>
+
+<!-- Butonlar -->
+<button onclick="openModal('add-customer-modal')">Kayit Ol</button>
+<button onclick="openModal('add-reservation-modal')">Rezervasyon Yap</button>
+<button onclick="openModal('service-modal')">Hizmetler</button>
+
+
+<!-- Hizmet Modalı -->
+<div id="service-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('service-modal')">&times;</span>
+        <h2>Hizmet Listesi</h2>
+        <ul id="service-list"></ul>
+    </div>
+</div>
+
+<!-- Yeni Müşteri Ekle Modalı -->
+<div id="add-customer-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('add-customer-modal')">&times;</span>
+        <h2>KAYIT</h2>
+        <div class="form-group">
+            <input type="text" id="ad" placeholder="Ad" />
+        </div>
+        <div class="form-group">
+            <input type="text" id="soyad" placeholder="Soyad" />
+        </div>
+        <div class="form-group">
+            <input type="email" id="eposta" placeholder="E-posta" />
+        </div>
+        <div class="form-group">
+            <input type="text" id="telefon" placeholder="Telefon" />
+        </div>
+        <div class="form-group">
+            <input type="text" id="adres" placeholder="Adres" />
+        </div>
+        <div class="form-group">
+            <input type="text" id="sehir" placeholder="Şehir" />
+        </div>
+        <div class="form-group">
+            <input type="text" id="ulke" placeholder="Ülke" />
+        </div>
+        <button onclick="addCustomer()">Müşteri Ekle</button>
+    </div>
+</div>
+
+<!-- Yeni Rezervasyon Ekle Modalı -->
+<div id="add-reservation-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('add-reservation-modal')">&times;</span>
+        <h2>Rezervasyon</h2>
+        <div class="form-group">
+            <input type="number" id="musteri-id" placeholder="Müşteri ID" />
+        </div>
+        <div class="form-group">
+            <input type="number" id="oda-id" placeholder="Oda ID" />
+        </div>
+        <div class="form-group">
+            <input type="date" id="giris-tarihi" placeholder="Giriş Tarihi" />
+        </div>
+        <div class="form-group">
+            <input type="date" id="cikis-tarihi" placeholder="Çıkış Tarihi" />
+        </div>
+        <div class="form-group">
+            <input type="number" id="toplam-ucret" placeholder="Toplam Ücret" />
+        </div>
+        <button onclick="addReservation()">Rezervasyon Ekle</button>
+    </div>
+</div>
+
+<div class="box">
+    <h2>Tüm Odalar</h2>
+    <table id="roomsTable">
+        <thead>
+            <tr>
+                <th>Oda Numarası</th>
+                <th>Oda Tipi</th>
+                <th>Durum</th>
+                <th>Gecelik Ücret</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Room data will be inserted here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'block';
+        if (modalId === 'service-modal') {
+            getServices(); // Hizmet modalı açıldığında hizmetleri getir
+        }
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function getServices() {
+        fetch('/api/hizmetler')
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById('service-list');
+                list.innerHTML = ''; // Mevcut listeyi temizle
+                if (Array.isArray(data) && data.length > 0) {
+                    data.forEach(service => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = service.aciklama; // Hizmet açıklamasını ekle
+                        list.appendChild(listItem);
+                    });
+                } else {
+                    list.innerHTML = '<li>Hizmet bulunamadı.</li>'; // Hizmet yoksa bilgilendirme
+                }
+            })
+            .catch(error => {
+                console.error('Hizmetler getirilemedi:', error);
+                const list = document.getElementById('service-list');
+                list.innerHTML = '<li>Hizmetler getirilemedi.</li>';
+            });
+    }
+
+    function addReservation() {
+        const musteri_id = document.getElementById('musteri-id').value;
+        const oda_id = document.getElementById('oda-id').value;
+        const giris_tarihi = document.getElementById('giris-tarihi').value;
+        const cikis_tarihi = document.getElementById('cikis-tarihi').value;
+        const toplam_ucret = document.getElementById('toplam-ucret').value;
+
+        fetch('/api/rezervasyon-ekle', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ musteri_id, oda_id, giris_tarihi, cikis_tarihi, toplam_ucret })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+            } else {
+                alert('Rezervasyon ekleme hatası');
+            }
+            closeModal('add-reservation-modal');
+        });
+    }
+
+    function addCustomer() {
+        const ad = document.getElementById('ad').value;
+        const soyad = document.getElementById('soyad').value;
+        const eposta = document.getElementById('eposta').value;
+        const telefon = document.getElementById('telefon').value;
+        const adres = document.getElementById('adres').value;
+        const sehir = document.getElementById('sehir').value;
+        const ulke = document.getElementById('ulke').value;
+
+        fetch('/api/musteri-ekle', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ ad, soyad, eposta, telefon, adres, sehir, ulke })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+            } else {
+                alert('Müşteri ekleme hatası');
+            }
+            closeModal('add-customer-modal');
+        });
+    }
+
+    function checkRoomOccupancy() {
+        const odaNo = document.getElementById('odaNo').value;
+        fetch(`/api/oda-sorgula?odaNo=${odaNo}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('result').innerText = data.message;
+        })
+        .catch(error => console.error('Oda sorgulama hatası:', error));
+    }
+
+    // Fetch and display all rooms
+    fetch('/api/fetch-rooms')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const roomsTableBody = document.getElementById('roomsTable').querySelector('tbody');
+                roomsTableBody.innerHTML = ''; // Clear existing content
+                data.rooms.forEach(room => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${room.oda_numarasi}</td>
+                        <td>${room.oda_tipi}</td>
+                        <td>${room.durum}</td>
+                        <td>${room.gecelik_ucret}</td>
+                    `;
+                    roomsTableBody.appendChild(row);
+                });
+            } else {
+                console.error('Oda listesi getirme hatası:', data.error);
+            }
+        })
+        .catch(error => console.error('Oda listesi getirme hatası:', error));
+</script>
+</body>
+</html>

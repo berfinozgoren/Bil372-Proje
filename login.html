@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Giriş</title>
+    <style>
+        body {
+            background-image: url('background.jpg'); /* Arka plan resmi dosya adı */
+            background-size: cover; /* Resmi ekran boyutuna göre ölçeklendir */
+            background-position: center; /* Resmi ortala */
+            height: 100vh; /* Sayfa yüksekliğini ekran yüksekliğine eşitle */
+            margin: 0; /* Kenar boşluklarını kaldır */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white; /* Metin rengi */
+            text-align: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.8); /* Hafif opak bir arka plan */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Admin Giriş</h1>
+    <form id="loginForm">
+        <div class="form-group">
+            <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+        </div>
+        <div class="form-group">
+            <input type="password" id="password" placeholder="Şifre" required>
+        </div>
+        <button type="submit">Giriş Yap</button>
+    </form>
+    <div id="error-message"></div>
+</div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        fetch('/api/admin-login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/admin.html'; // Başarılı girişte admin sayfasına yönlendir
+                } else {
+                    document.getElementById('error-message').textContent = data.message;
+                }
+            })
+            .catch(error => {
+                console.error('Giriş hatası:', error);
+                document.getElementById('error-message').textContent = 'Giriş hatası. Lütfen tekrar deneyin.';
+            });
+    });
+</script>
+</body>
+</html>

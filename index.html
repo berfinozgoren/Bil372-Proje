@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otel Yönetim Arayüzü</title>
+    <style>
+        body {
+            background-image: url('background.jpg'); /* Arka plan resmi dosya adı */
+            background-size: cover; /* Resmi ekran boyutuna göre ölçeklendir */
+            background-position: center; /* Resmi ortala */
+            height: 100vh; /* Sayfa yüksekliğini ekran yüksekliğine eşitle */
+            margin: 0; /* Kenar boşluklarını kaldır */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white; /* Metin rengi */
+            text-align: center;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<h1>Hoş Geldiniz!</h1>
+<p>Lütfen kullanıcı tipinizi seçin:</p>
+<button onclick="goToPage('customer')">Müşteri</button>
+<button onclick="goToPage('admin')">Yönetici</button>
+
+<script>
+    function goToPage(type) {
+        if (type === 'customer') {
+            window.location.href = '/customer.html';
+        } else if (type === 'admin') {
+            window.location.href = '/login.html'; // Admin giriş sayfasına yönlendir
+        }
+    }
+</script>
+</body>
+</html>
